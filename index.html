@@ -1768,18 +1768,126 @@ async function generateAndDownloadPdf() {
 
 
     // 今回は動作確認のためダウンロード
-    pdf.save(
-        fileName
+    // 確認用としてPDFをダウンロード
+pdf.save(
+    fileName
+);
+
+
+// PDFをData URIとして取得
+const pdfDataUri =
+    pdf.output(
+        "datauristring"
     );
 
 
-    return pdf;
+// 「data:application/pdf;base64,」の後ろだけ取得
+const pdfBase64 =
+    pdfDataUri.substring(
+        pdfDataUri.indexOf(",") + 1
+    );
+
+
+return {
+
+    pdf:
+        pdf,
+
+    pdfBase64:
+        pdfBase64,
+
+    fileName:
+        fileName
+
+};
 
 }
 
-    // =========================================================
-// 確定するボタン
 // =========================================================
+// Power AutomateへPDF送信
+// =========================================================
+
+async function sendPdfToPowerAutomate(
+    pdfBase64,
+    fileName
+) {
+
+    if (!POWER_AUTOMATE_URL) {
+
+        throw new Error(
+            "Power AutomateのURLが設定されていません。"
+        );
+
+    }
+
+
+    const requestBody = {
+
+        recordId:
+            String(recordId),
+
+        fileName:
+            fileName,
+
+        pdfBase64:
+            pdfBase64
+
+    };
+
+
+    const response =
+        await fetch(
+            POWER_AUTOMATE_URL,
+            {
+                method:
+                    "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(
+                        requestBody
+                    )
+
+            }
+        );
+
+
+    if (!response.ok) {
+
+        const responseText =
+            await response.text();
+
+
+        console.error(
+            "Power Automate Error:",
+            response.status,
+            responseText
+        );
+
+
+        throw new Error(
+            "Power Automateへの送信に失敗しました。HTTP " +
+            response.status
+        );
+
+    }
+
+
+    console.log(
+        "Power Automate送信成功"
+    );
+
+}
+    
+    // =========================================================
+    // 確定するボタン
+    // =========================================================
 
 submitButton.addEventListener(
     "click",
@@ -1864,13 +1972,27 @@ submitButton.addEventListener(
             );
 
 
-            // PDF生成・ダウンロード
-            await generateAndDownloadPdf();
+            // PDF生成・Base64取得
+const pdfResult =
+    await generateAndDownloadPdf();
 
 
-            signatureMessage.textContent =
-                "PDFを作成しました。";
+signatureMessage.textContent =
+    "PDFをkintoneへ保存しています...";
 
+signatureMessage.style.color =
+    "#1677ff";
+
+
+// Power Automateへ送信
+await sendPdfToPowerAutomate(
+    pdfResult.pdfBase64,
+    pdfResult.fileName
+);
+
+
+signatureMessage.textContent =
+    "PDFをkintoneへ保存しました。";
             signatureMessage.style.color =
                 "#169447";
 
