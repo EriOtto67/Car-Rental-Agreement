@@ -439,41 +439,65 @@ body {
 
 </div>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
+    // ========================================
+    // 貸出車両をURLから取得して表示
+    // ========================================
 
     const params = new URLSearchParams(window.location.search);
     const rentalVehicle = params.get("vehicle") || "";
 
-    document.getElementById("rentalVehicle").textContent = rentalVehicle;
+    const rentalVehicleElement =
+        document.getElementById("rentalVehicle");
+
+    if (rentalVehicleElement) {
+        rentalVehicleElement.textContent = rentalVehicle;
+    }
+
+
+    // ========================================
+    // 確認チェック
+    // ========================================
 
     const checks = Array.from(
         document.querySelectorAll(".confirm-check")
     );
 
-    const status = document.getElementById("status");
-    const nextButton = document.getElementById("nextButton");
+    const status =
+        document.getElementById("status");
+
+    const nextButton =
+        document.getElementById("nextButton");
 
 
     function updateStatus() {
 
         checks.forEach(function (check) {
 
-            const section = check.closest(".section");
+            const section =
+                check.closest(".section");
 
             if (check.checked) {
+
                 section.classList.add("checked");
+
             } else {
+
                 section.classList.remove("checked");
+
             }
 
         });
 
 
-        const checkedCount = checks.filter(function (check) {
-            return check.checked;
-        }).length;
+        const checkedCount =
+            checks.filter(function (check) {
+
+                return check.checked;
+
+            }).length;
 
 
         if (checkedCount === checks.length) {
@@ -484,8 +508,11 @@ document.addEventListener("DOMContentLoaded", function () {
             status.classList.add("complete");
 
             nextButton.disabled = false;
+
             nextButton.classList.add("enabled");
-            nextButton.textContent = "署名へ進む";
+
+            nextButton.textContent =
+                "署名へ進む";
 
         } else {
 
@@ -499,11 +526,56 @@ document.addEventListener("DOMContentLoaded", function () {
             status.classList.remove("complete");
 
             nextButton.disabled = true;
+
             nextButton.classList.remove("enabled");
+
             nextButton.textContent =
                 "すべての項目を確認してください";
+
         }
+
     }
 
 
-    checks.forEach(
+    // ========================================
+    // チェック変更時
+    // ========================================
+
+    checks.forEach(function (check) {
+
+        check.addEventListener(
+            "change",
+            updateStatus
+        );
+
+    });
+
+
+    // ========================================
+    // 署名へ進むボタン
+    // ========================================
+
+    nextButton.addEventListener(
+        "click",
+        function () {
+
+            if (nextButton.disabled) {
+                return;
+            }
+
+            alert(
+                "すべての確認が完了しました。"
+            );
+
+        }
+    );
+
+
+    // ========================================
+    // 初期状態反映
+    // ========================================
+
+    updateStatus();
+
+});
+</script>
