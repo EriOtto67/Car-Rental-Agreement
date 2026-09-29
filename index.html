@@ -693,3 +693,670 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =========================================================
+    // URLパラメータ取得
+    // =========================================================
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const rentalVehicle =
+        params.get("vehicle") || "";
+
+    const recordId =
+        params.get("record") || "";
+
+
+    // =========================================================
+    // 貸出車両表示
+    // =========================================================
+
+    const rentalVehicleElement =
+        document.getElementById("rentalVehicle");
+
+    if (rentalVehicleElement) {
+
+        rentalVehicleElement.textContent =
+            rentalVehicle;
+
+    }
+
+
+    // =========================================================
+    // 確認チェック
+    // =========================================================
+
+    const checks =
+        Array.from(
+            document.querySelectorAll(".confirm-check")
+        );
+
+    const status =
+        document.getElementById("status");
+
+    const nextButton =
+        document.getElementById("nextButton");
+
+
+    function updateStatus() {
+
+        checks.forEach(function (check) {
+
+            const section =
+                check.closest(".section");
+
+            if (check.checked) {
+
+                section.classList.add("checked");
+
+            } else {
+
+                section.classList.remove("checked");
+
+            }
+
+        });
+
+
+        const checkedCount =
+            checks.filter(function (check) {
+
+                return check.checked;
+
+            }).length;
+
+
+        if (checkedCount === checks.length) {
+
+            status.textContent =
+                "すべての項目を確認しました。";
+
+            status.classList.add("complete");
+
+            nextButton.disabled =
+                false;
+
+            nextButton.classList.add("enabled");
+
+            nextButton.textContent =
+                "署名へ進む";
+
+        } else {
+
+            status.textContent =
+                "確認済み " +
+                checkedCount +
+                " / " +
+                checks.length +
+                " 項目";
+
+            status.classList.remove("complete");
+
+            nextButton.disabled =
+                true;
+
+            nextButton.classList.remove("enabled");
+
+            nextButton.textContent =
+                "すべての項目を確認してください";
+
+        }
+
+    }
+
+
+    // =========================================================
+    // チェック変更
+    // =========================================================
+
+    checks.forEach(function (check) {
+
+        check.addEventListener(
+            "change",
+            updateStatus
+        );
+
+    });
+
+
+    // =========================================================
+    // 電子署名 DOM
+    // =========================================================
+
+    const signatureSection =
+        document.getElementById(
+            "signatureSection"
+        );
+
+    const canvas =
+        document.getElementById(
+            "signatureCanvas"
+        );
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const clearButton =
+        document.getElementById(
+            "clearButton"
+        );
+
+    const submitButton =
+        document.getElementById(
+            "submitButton"
+        );
+
+    const signatureMessage =
+        document.getElementById(
+            "signatureMessage"
+        );
+
+
+    // =========================================================
+    // 署名状態
+    // =========================================================
+
+    let drawing =
+        false;
+
+    let hasSignature =
+        false;
+
+    let lastX =
+        0;
+
+    let lastY =
+        0;
+
+
+    // =========================================================
+    // Canvas 描画設定
+    // =========================================================
+
+    function setupDrawingContext() {
+
+        const ratio =
+            window.devicePixelRatio || 1;
+
+        ctx.setTransform(
+            ratio,
+            0,
+            0,
+            ratio,
+            0,
+            0
+        );
+
+        ctx.lineCap =
+            "round";
+
+        ctx.lineJoin =
+            "round";
+
+        ctx.strokeStyle =
+            "#111";
+
+        ctx.lineWidth =
+            3;
+
+    }
+
+
+    // =========================================================
+    // Canvas サイズ設定
+    // =========================================================
+
+    function resizeCanvas() {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        const ratio =
+            window.devicePixelRatio || 1;
+
+        canvas.width =
+            Math.round(
+                rect.width * ratio
+            );
+
+        canvas.height =
+            Math.round(
+                rect.height * ratio
+            );
+
+        setupDrawingContext();
+
+    }
+
+
+    // =========================================================
+    // Pointer 座標取得
+    // =========================================================
+
+    function getPosition(event) {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        return {
+
+            x:
+                event.clientX -
+                rect.left,
+
+            y:
+                event.clientY -
+                rect.top
+
+        };
+
+    }
+
+
+    // =========================================================
+    // 描画開始
+    // =========================================================
+
+    function startDrawing(event) {
+
+        event.preventDefault();
+
+        drawing =
+            true;
+
+        const position =
+            getPosition(event);
+
+        lastX =
+            position.x;
+
+        lastY =
+            position.y;
+
+
+        if (
+            canvas.setPointerCapture &&
+            event.pointerId !== undefined
+        ) {
+
+            canvas.setPointerCapture(
+                event.pointerId
+            );
+
+        }
+
+    }
+
+
+    // =========================================================
+    // 描画
+    // =========================================================
+
+    function draw(event) {
+
+        if (!drawing) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const position =
+            getPosition(event);
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            lastX,
+            lastY
+        );
+
+        ctx.lineTo(
+            position.x,
+            position.y
+        );
+
+        ctx.stroke();
+
+
+        lastX =
+            position.x;
+
+        lastY =
+            position.y;
+
+
+        hasSignature =
+            true;
+
+        submitButton.disabled =
+            false;
+
+        signatureMessage.textContent =
+            "";
+
+    }
+
+
+    // =========================================================
+    // 描画終了
+    // =========================================================
+
+    function stopDrawing(event) {
+
+        if (!drawing) {
+            return;
+        }
+
+        event.preventDefault();
+
+        drawing =
+            false;
+
+
+        if (
+            canvas.releasePointerCapture &&
+            event.pointerId !== undefined
+        ) {
+
+            try {
+
+                canvas.releasePointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {
+
+                // 何もしない
+
+            }
+
+        }
+
+    }
+
+
+    // =========================================================
+    // 署名クリア
+    // =========================================================
+
+    function clearCanvas() {
+
+        drawing =
+            false;
+
+        lastX =
+            0;
+
+        lastY =
+            0;
+
+
+        const currentWidth =
+            canvas.width;
+
+        const currentHeight =
+            canvas.height;
+
+
+        canvas.width =
+            currentWidth;
+
+        canvas.height =
+            currentHeight;
+
+
+        setupDrawingContext();
+
+
+        hasSignature =
+            false;
+
+        submitButton.disabled =
+            true;
+
+        signatureMessage.textContent =
+            "";
+
+    }
+
+
+    // =========================================================
+    // 署名 PNG 生成
+    // =========================================================
+
+    function createSignaturePng() {
+
+        const outputCanvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        outputCanvas.width =
+            canvas.width;
+
+        outputCanvas.height =
+            canvas.height;
+
+
+        const outputCtx =
+            outputCanvas.getContext(
+                "2d"
+            );
+
+
+        // 白背景
+        outputCtx.fillStyle =
+            "#ffffff";
+
+        outputCtx.fillRect(
+            0,
+            0,
+            outputCanvas.width,
+            outputCanvas.height
+        );
+
+
+        // 手書き署名を重ねる
+        outputCtx.drawImage(
+            canvas,
+            0,
+            0
+        );
+
+
+        return outputCanvas.toDataURL(
+            "image/png"
+        );
+
+    }
+
+
+    // =========================================================
+    // 署名へ進む
+    // =========================================================
+
+    nextButton.addEventListener(
+        "click",
+        function () {
+
+            if (nextButton.disabled) {
+                return;
+            }
+
+
+            // 署名エリア表示
+            signatureSection.style.display =
+                "block";
+
+
+            // display:none状態ではCanvasサイズが取れないため、
+            // 表示した後でサイズ設定
+            resizeCanvas();
+
+
+            // 署名欄へスクロール
+            signatureSection.scrollIntoView({
+
+                behavior:
+                    "smooth",
+
+                block:
+                    "start"
+
+            });
+
+        }
+    );
+
+
+    // =========================================================
+    // Canvas Pointer Event
+    // =========================================================
+
+    canvas.addEventListener(
+        "pointerdown",
+        startDrawing
+    );
+
+    canvas.addEventListener(
+        "pointermove",
+        draw
+    );
+
+    canvas.addEventListener(
+        "pointerup",
+        stopDrawing
+    );
+
+    canvas.addEventListener(
+        "pointercancel",
+        stopDrawing
+    );
+
+    canvas.addEventListener(
+        "pointerleave",
+        stopDrawing
+    );
+
+
+    // =========================================================
+    // 書き直す
+    // =========================================================
+
+    clearButton.addEventListener(
+        "click",
+        clearCanvas
+    );
+
+
+    // =========================================================
+    // 確定する
+    // =========================================================
+
+    submitButton.addEventListener(
+        "click",
+        function () {
+
+            if (!hasSignature) {
+
+                signatureMessage.textContent =
+                    "署名してください。";
+
+                signatureMessage.style.color =
+                    "#c5221f";
+
+                return;
+
+            }
+
+
+            // -----------------------------------------
+            // 署名PNG生成
+            // -----------------------------------------
+
+            const signaturePng =
+                createSignaturePng();
+
+
+            // -----------------------------------------
+            // 現段階では生成確認のみ
+            // 次の工程でPDFへ貼り付ける
+            // -----------------------------------------
+
+            signatureMessage.textContent =
+                "署名を確認しました。";
+
+            signatureMessage.style.color =
+                "#169447";
+
+
+            console.log(
+                "署名確認完了"
+            );
+
+            console.log(
+                "Record ID:",
+                recordId
+            );
+
+            console.log(
+                "貸出車両:",
+                rentalVehicle
+            );
+
+            console.log(
+                "署名PNG:",
+                signaturePng
+            );
+
+        }
+    );
+
+
+    // =========================================================
+    // iPad 画面回転対応
+    // =========================================================
+
+    window.addEventListener(
+        "orientationchange",
+        function () {
+
+            if (
+                signatureSection.style.display ===
+                "block"
+            ) {
+
+                setTimeout(
+                    function () {
+
+                        resizeCanvas();
+
+                        clearCanvas();
+
+                    },
+                    300
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================================
+    // 初期状態
+    // =========================================================
+
+    updateStatus();
+
+});
+</script>
+
+</body>
+</html>
