@@ -199,6 +199,95 @@ body {
     cursor: pointer;
 }
 
+/* ================================
+   電子署名
+================================ */
+
+#signatureSection {
+    margin-top: 8mm;
+    padding-top: 6mm;
+    border-top: 1px solid #ddd;
+}
+
+#signatureSection h2 {
+    margin: 0 0 3mm;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+#signatureSection > div:nth-of-type(1) {
+    margin-bottom: 5mm;
+    text-align: center;
+    font-size: 16px;
+    color: #555;
+}
+
+.signature-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.signature-area {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border: 2px solid #555;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+    touch-action: none;
+}
+
+#signatureCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.signature-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 15px;
+}
+
+.signature-buttons button {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    min-height: 58px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#clearButton {
+    flex: 1;
+    background: #e5e7eb;
+    color: #222;
+}
+
+#submitButton {
+    flex: 2;
+    background: #1677ff;
+    color: #fff;
+}
+
+#submitButton:disabled {
+    background: #aab7c4;
+    cursor: not-allowed;
+}
+
+#signatureMessage {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+}
+    
 @media screen and (max-width: 850px) {
 
     body {
