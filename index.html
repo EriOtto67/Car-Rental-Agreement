@@ -751,8 +751,11 @@ body {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+    "use strict";
+
+
     // =========================================================
-    // URLパラメータ取得
+    // URLパラメータ
     // =========================================================
 
     const params =
@@ -766,23 +769,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =========================================================
-    // 貸出車両表示
+    // 操作用画面 DOM
     // =========================================================
 
     const rentalVehicleElement =
         document.getElementById("rentalVehicle");
-
-    if (rentalVehicleElement) {
-
-        rentalVehicleElement.textContent =
-            rentalVehicle;
-
-    }
-
-
-    // =========================================================
-    // 確認チェック
-    // =========================================================
 
     const checks =
         Array.from(
@@ -795,6 +786,57 @@ document.addEventListener("DOMContentLoaded", function () {
     const nextButton =
         document.getElementById("nextButton");
 
+    const signatureSection =
+        document.getElementById("signatureSection");
+
+    const canvas =
+        document.getElementById("signatureCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const clearButton =
+        document.getElementById("clearButton");
+
+    const submitButton =
+        document.getElementById("submitButton");
+
+    const signatureMessage =
+        document.getElementById("signatureMessage");
+
+
+    // =========================================================
+    // PDF保存専用A4 DOM
+    // =========================================================
+
+    const pdfDocument =
+        document.getElementById("pdfDocument");
+
+    const pdfSections =
+        document.getElementById("pdfSections");
+
+    const pdfRentalVehicle =
+        document.getElementById("pdfRentalVehicle");
+
+    const pdfSignatureImage =
+        document.getElementById("pdfSignatureImage");
+
+
+    // =========================================================
+    // 貸出車両表示
+    // =========================================================
+
+    if (rentalVehicleElement) {
+
+        rentalVehicleElement.textContent =
+            rentalVehicle;
+
+    }
+
+
+    // =========================================================
+    // 確認チェック状態更新
+    // =========================================================
 
     function updateStatus() {
 
@@ -802,6 +844,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const section =
                 check.closest(".section");
+
+            if (!section) {
+                return;
+            }
 
             if (check.checked) {
 
@@ -824,7 +870,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }).length;
 
 
-        if (checkedCount === checks.length) {
+        if (
+            checks.length > 0 &&
+            checkedCount === checks.length
+        ) {
 
             status.textContent =
                 "すべての項目を確認しました。";
@@ -863,10 +912,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =========================================================
-    // チェック変更
-    // =========================================================
-
     checks.forEach(function (check) {
 
         check.addEventListener(
@@ -875,39 +920,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
     });
-
-
-    // =========================================================
-    // 電子署名 DOM
-    // =========================================================
-
-    const signatureSection =
-        document.getElementById(
-            "signatureSection"
-        );
-
-    const canvas =
-        document.getElementById(
-            "signatureCanvas"
-        );
-
-    const ctx =
-        canvas.getContext("2d");
-
-    const clearButton =
-        document.getElementById(
-            "clearButton"
-        );
-
-    const submitButton =
-        document.getElementById(
-            "submitButton"
-        );
-
-    const signatureMessage =
-        document.getElementById(
-            "signatureMessage"
-        );
 
 
     // =========================================================
@@ -928,193 +940,186 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =========================================================
-    // Canvas 描画設定
+    // Canvas描画設定
     // =========================================================
 
     function setupDrawingContext() {
 
-    const ratio =
-        window.devicePixelRatio || 1;
+        const ratio =
+            window.devicePixelRatio || 1;
 
-    ctx.setTransform(
-        ratio,
-        0,
-        0,
-        ratio,
-        0,
-        0
-    );
+        ctx.setTransform(
+            ratio,
+            0,
+            0,
+            ratio,
+            0,
+            0
+        );
 
-    ctx.lineCap =
-        "round";
+        ctx.lineCap =
+            "round";
 
-    ctx.lineJoin =
-        "round";
+        ctx.lineJoin =
+            "round";
 
-    ctx.strokeStyle =
-        "#111";
+        ctx.strokeStyle =
+            "#111";
 
-    ctx.lineWidth =
-        3;
+        ctx.lineWidth =
+            3;
 
-}
-
-// =========================================================
-// 日付・署名ガイド描画
-// =========================================================
-
-function drawSignatureGuide() {
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-    const width =
-        rect.width;
-
-    const height =
-        rect.height;
+    }
 
 
-    ctx.save();
-
-
-    // ガイド文字
-    ctx.fillStyle =
-        "#666";
-
-    ctx.font =
-        '16px -apple-system, BlinkMacSystemFont, "Yu Gothic", Meiryo, sans-serif';
-
-
-    // =========================
-    // 記入日
-    // =========================
-
-    ctx.fillText(
-        "記入日",
-        25,
-        35
-    );
-
-
-    // 年
-    ctx.strokeStyle =
-        "#999";
-
-    ctx.lineWidth =
-        1;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        25,
-        85
-    );
-
-    ctx.lineTo(
-        145,
-        85
-    );
-
-    ctx.stroke();
-
-
-    ctx.fillText(
-        "年",
-        150,
-        85
-    );
-
-
-    // 月
-    ctx.beginPath();
-
-    ctx.moveTo(
-        190,
-        85
-    );
-
-    ctx.lineTo(
-        270,
-        85
-    );
-
-    ctx.stroke();
-
-
-    ctx.fillText(
-        "月",
-        275,
-        85
-    );
-
-
-    // 日
-    ctx.beginPath();
-
-    ctx.moveTo(
-        315,
-        85
-    );
-
-    ctx.lineTo(
-        395,
-        85
-    );
-
-    ctx.stroke();
-
-
-    ctx.fillText(
-        "日",
-        400,
-        85
-    );
-
-
-    // =========================
-    // ご署名
-    // =========================
-
-    ctx.fillStyle =
-        "#666";
-
-    ctx.fillText(
-        "ご署名",
-        25,
-        145
-    );
-
-
-    // 署名用下線
-    ctx.strokeStyle =
-        "#999";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        25,
-        height - 35
-    );
-
-    ctx.lineTo(
-        width - 25,
-        height - 35
-    );
-
-    ctx.stroke();
-
-
-    ctx.restore();
-
-
-    // 手書き用設定へ戻す
-    setupDrawingContext();
-
-}
-    
     // =========================================================
-    // Canvas サイズ設定
+    // 日付・署名ガイド
+    // =========================================================
+
+    function drawSignatureGuide() {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        const width =
+            rect.width;
+
+        const height =
+            rect.height;
+
+
+        ctx.save();
+
+
+        ctx.fillStyle =
+            "#666";
+
+        ctx.font =
+            '16px -apple-system, BlinkMacSystemFont, "Yu Gothic", Meiryo, sans-serif';
+
+
+        // 記入日
+        ctx.fillText(
+            "記入日",
+            25,
+            35
+        );
+
+
+        ctx.strokeStyle =
+            "#999";
+
+        ctx.lineWidth =
+            1;
+
+
+        // 年
+        ctx.beginPath();
+
+        ctx.moveTo(
+            25,
+            85
+        );
+
+        ctx.lineTo(
+            145,
+            85
+        );
+
+        ctx.stroke();
+
+        ctx.fillText(
+            "年",
+            150,
+            85
+        );
+
+
+        // 月
+        ctx.beginPath();
+
+        ctx.moveTo(
+            190,
+            85
+        );
+
+        ctx.lineTo(
+            270,
+            85
+        );
+
+        ctx.stroke();
+
+        ctx.fillText(
+            "月",
+            275,
+            85
+        );
+
+
+        // 日
+        ctx.beginPath();
+
+        ctx.moveTo(
+            315,
+            85
+        );
+
+        ctx.lineTo(
+            395,
+            85
+        );
+
+        ctx.stroke();
+
+        ctx.fillText(
+            "日",
+            400,
+            85
+        );
+
+
+        // ご署名
+        ctx.fillStyle =
+            "#666";
+
+        ctx.fillText(
+            "ご署名",
+            25,
+            145
+        );
+
+
+        // 署名用下線
+        ctx.strokeStyle =
+            "#999";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            25,
+            height - 35
+        );
+
+        ctx.lineTo(
+            width - 25,
+            height - 35
+        );
+
+        ctx.stroke();
+
+
+        ctx.restore();
+
+
+        // 手書き用設定へ戻す
+        setupDrawingContext();
+
+    }
+
+
+    // =========================================================
+    // Canvasサイズ設定
     // =========================================================
 
     function resizeCanvas() {
@@ -1124,6 +1129,7 @@ function drawSignatureGuide() {
 
         const ratio =
             window.devicePixelRatio || 1;
+
 
         canvas.width =
             Math.round(
@@ -1135,6 +1141,7 @@ function drawSignatureGuide() {
                 rect.height * ratio
             );
 
+
         setupDrawingContext();
 
         drawSignatureGuide();
@@ -1143,7 +1150,7 @@ function drawSignatureGuide() {
 
 
     // =========================================================
-    // Pointer 座標取得
+    // Pointer座標取得
     // =========================================================
 
     function getPosition(event) {
@@ -1176,6 +1183,7 @@ function drawSignatureGuide() {
 
         drawing =
             true;
+
 
         const position =
             getPosition(event);
@@ -1212,6 +1220,7 @@ function drawSignatureGuide() {
         }
 
         event.preventDefault();
+
 
         const position =
             getPosition(event);
@@ -1290,7 +1299,7 @@ function drawSignatureGuide() {
 
 
     // =========================================================
-    // 署名クリア
+    // 書き直す
     // =========================================================
 
     function clearCanvas() {
@@ -1323,6 +1332,7 @@ function drawSignatureGuide() {
 
         drawSignatureGuide();
 
+
         hasSignature =
             false;
 
@@ -1332,20 +1342,21 @@ function drawSignatureGuide() {
         signatureMessage.textContent =
             "";
 
+        pdfSignatureImage.removeAttribute(
+            "src"
+        );
+
     }
 
 
     // =========================================================
-    // 署名 PNG 生成
+    // 日付・署名PNG生成
     // =========================================================
 
     function createSignaturePng() {
 
         const outputCanvas =
-            document.createElement(
-                "canvas"
-            );
-
+            document.createElement("canvas");
 
         outputCanvas.width =
             canvas.width;
@@ -1355,9 +1366,7 @@ function drawSignatureGuide() {
 
 
         const outputCtx =
-            outputCanvas.getContext(
-                "2d"
-            );
+            outputCanvas.getContext("2d");
 
 
         // 白背景
@@ -1372,7 +1381,7 @@ function drawSignatureGuide() {
         );
 
 
-        // 手書き署名を重ねる
+        // 日付ガイド・署名ガイド・手書き内容
         outputCtx.drawImage(
             canvas,
             0,
@@ -1382,6 +1391,176 @@ function drawSignatureGuide() {
 
         return outputCanvas.toDataURL(
             "image/png"
+        );
+
+    }
+
+
+    // =========================================================
+    // PDF用の7項目を生成
+    // =========================================================
+
+    function createPdfSections() {
+
+        // 前回生成した内容を削除
+        pdfSections.innerHTML =
+            "";
+
+
+        const sourceSections =
+            Array.from(
+                document.querySelectorAll(
+                    ".a4 > .section"
+                )
+            );
+
+
+        sourceSections.forEach(
+            function (sourceSection) {
+
+                const titleElement =
+                    sourceSection.querySelector(
+                        ".check-title span:last-child"
+                    );
+
+                const noteElements =
+                    Array.from(
+                        sourceSection.querySelectorAll(
+                            ".notes li"
+                        )
+                    );
+
+
+                // PDF用セクション
+                const pdfSection =
+                    document.createElement("div");
+
+                pdfSection.className =
+                    "pdf-section";
+
+
+                // PDF用見出し
+                const pdfTitle =
+                    document.createElement("div");
+
+                pdfTitle.className =
+                    "pdf-section-title";
+
+
+                // レ点
+                const pdfCheck =
+                    document.createElement("span");
+
+                pdfCheck.className =
+                    "pdf-check";
+
+                pdfCheck.textContent =
+                    "✓";
+
+
+                // 見出し文字
+                const pdfTitleText =
+                    document.createElement("span");
+
+                pdfTitleText.textContent =
+                    titleElement
+                        ? titleElement.textContent.trim()
+                        : "";
+
+
+                pdfTitle.appendChild(
+                    pdfCheck
+                );
+
+                pdfTitle.appendChild(
+                    pdfTitleText
+                );
+
+
+                // 注意事項リスト
+                const pdfNotes =
+                    document.createElement("ul");
+
+                pdfNotes.className =
+                    "pdf-notes";
+
+
+                noteElements.forEach(
+                    function (noteElement) {
+
+                        const pdfNote =
+                            document.createElement("li");
+
+                        pdfNote.textContent =
+                            noteElement.textContent
+                                .replace(/\s+/g, " ")
+                                .trim();
+
+                        pdfNotes.appendChild(
+                            pdfNote
+                        );
+
+                    }
+                );
+
+
+                pdfSection.appendChild(
+                    pdfTitle
+                );
+
+                pdfSection.appendChild(
+                    pdfNotes
+                );
+
+                pdfSections.appendChild(
+                    pdfSection
+                );
+
+            }
+        );
+
+    }
+
+
+    // =========================================================
+    // PDF専用A4へデータを反映
+    // =========================================================
+
+    function buildPdfDocument(
+        signaturePng
+    ) {
+
+        // 7つの確認事項
+        createPdfSections();
+
+
+        // 貸出車両
+        pdfRentalVehicle.textContent =
+            rentalVehicle;
+
+
+        // 日付・署名画像
+        pdfSignatureImage.src =
+            signaturePng;
+
+
+        console.log(
+            "PDF専用A4作成完了"
+        );
+
+        console.log(
+            "Record ID:",
+            recordId
+        );
+
+        console.log(
+            "貸出車両:",
+            rentalVehicle
+        );
+
+        console.log(
+            "PDF用確認項目数:",
+            pdfSections.children.length
         );
 
     }
@@ -1400,17 +1579,15 @@ function drawSignatureGuide() {
             }
 
 
-            // 署名エリア表示
             signatureSection.style.display =
                 "block";
 
 
-            // display:none状態ではCanvasサイズが取れないため、
-            // 表示した後でサイズ設定
+            // 非表示状態ではCanvasサイズが取れないため、
+            // 表示後にCanvasを設定
             resizeCanvas();
 
 
-            // 署名欄へスクロール
             signatureSection.scrollIntoView({
 
                 behavior:
@@ -1456,7 +1633,7 @@ function drawSignatureGuide() {
 
 
     // =========================================================
-    // 書き直す
+    // 書き直すボタン
     // =========================================================
 
     clearButton.addEventListener(
@@ -1466,7 +1643,7 @@ function drawSignatureGuide() {
 
 
     // =========================================================
-    // 確定する
+    // 確定するボタン
     // =========================================================
 
     submitButton.addEventListener(
@@ -1476,7 +1653,7 @@ function drawSignatureGuide() {
             if (!hasSignature) {
 
                 signatureMessage.textContent =
-                    "署名してください。";
+                    "日付と署名を記入してください。";
 
                 signatureMessage.style.color =
                     "#c5221f";
@@ -1486,43 +1663,50 @@ function drawSignatureGuide() {
             }
 
 
-            // -----------------------------------------
-            // 署名PNG生成
-            // -----------------------------------------
+            const allChecked =
+                checks.every(
+                    function (check) {
 
+                        return check.checked;
+
+                    }
+                );
+
+
+            if (!allChecked) {
+
+                signatureMessage.textContent =
+                    "すべての確認項目をチェックしてください。";
+
+                signatureMessage.style.color =
+                    "#c5221f";
+
+                return;
+
+            }
+
+
+            // 日付・署名をPNG化
             const signaturePng =
                 createSignaturePng();
 
 
-            // -----------------------------------------
-            // 現段階では生成確認のみ
-            // 次の工程でPDFへ貼り付ける
-            // -----------------------------------------
+            // PDF専用A4を完成させる
+            buildPdfDocument(
+                signaturePng
+            );
+
 
             signatureMessage.textContent =
-                "署名を確認しました。";
+                "PDF用の誓約書を作成しました。";
 
             signatureMessage.style.color =
                 "#169447";
 
 
             console.log(
-                "署名確認完了"
-            );
-
-            console.log(
-                "Record ID:",
-                recordId
-            );
-
-            console.log(
-                "貸出車両:",
-                rentalVehicle
-            );
-
-            console.log(
-                "署名PNG:",
-                signaturePng
+                "PDF Document:",
+                pdfDocument
             );
 
         }
@@ -1530,7 +1714,7 @@ function drawSignatureGuide() {
 
 
     // =========================================================
-    // iPad 画面回転対応
+    // iPad画面回転対応
     // =========================================================
 
     window.addEventListener(
