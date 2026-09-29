@@ -499,8 +499,8 @@ body {
     
 </style>
 
-https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.jsscript>
-https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.jsscript>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
 
@@ -1772,127 +1772,130 @@ async function generateAndDownloadPdf() {
 }
 
     // =========================================================
-    // 確定するボタン
-    // =========================================================
+// 確定するボタン
+// =========================================================
 
-    submitButton.addEventListener(
+submitButton.addEventListener(
     "click",
     async function () {
 
-            if (!hasSignature) {
+        if (!hasSignature) {
 
-                signatureMessage.textContent =
-                    "日付と署名を記入してください。";
+            signatureMessage.textContent =
+                "日付と署名を記入してください。";
 
-                signatureMessage.style.color =
-                    "#c5221f";
+            signatureMessage.style.color =
+                "#c5221f";
 
-                return;
-
-            }
-
-
-            const allChecked =
-                checks.every(
-                    function (check) {
-
-                        return check.checked;
-
-                    }
-                );
+            return;
+        }
 
 
-            if (!allChecked) {
+        const allChecked =
+            checks.every(
+                function (check) {
 
-                signatureMessage.textContent =
-                    "すべての確認項目をチェックしてください。";
+                    return check.checked;
 
-                signatureMessage.style.color =
-                    "#c5221f";
-
-                return;
-
-            }
+                }
+            );
 
 
-            try {
+        if (!allChecked) {
 
-    submitButton.disabled =
-        true;
+            signatureMessage.textContent =
+                "すべての確認項目をチェックしてください。";
 
-    clearButton.disabled =
-        true;
+            signatureMessage.style.color =
+                "#c5221f";
 
-
-    signatureMessage.textContent =
-        "PDFを作成しています...";
-
-    signatureMessage.style.color =
-        "#1677ff";
+            return;
+        }
 
 
-    // PDF専用A4を完成させる
-    buildPdfDocument(
-        signaturePng
-    );
+        try {
+
+            submitButton.disabled =
+                true;
+
+            clearButton.disabled =
+                true;
 
 
-    // img要素への反映を待つ
-    await new Promise(
-        function (resolve) {
+            signatureMessage.textContent =
+                "PDFを作成しています...";
 
-            requestAnimationFrame(
-                function () {
+            signatureMessage.style.color =
+                "#1677ff";
+
+
+            // 日付・署名をPNG化
+            const signaturePng =
+                createSignaturePng();
+
+
+            // PDF専用A4を完成させる
+            buildPdfDocument(
+                signaturePng
+            );
+
+
+            // ブラウザの描画処理を2回待つ
+            await new Promise(
+                function (resolve) {
 
                     requestAnimationFrame(
-                        resolve
+                        function () {
+
+                            requestAnimationFrame(
+                                resolve
+                            );
+
+                        }
                     );
 
                 }
             );
 
+
+            // PDF生成・ダウンロード
+            await generateAndDownloadPdf();
+
+
+            signatureMessage.textContent =
+                "PDFを作成しました。";
+
+            signatureMessage.style.color =
+                "#169447";
+
         }
-    );
+        catch (error) {
+
+            console.error(
+                "PDF生成エラー:",
+                error
+            );
 
 
-    // PDF生成・ダウンロード
-    await generateAndDownloadPdf();
+            signatureMessage.textContent =
+                "PDFの作成に失敗しました。";
 
+            signatureMessage.style.color =
+                "#c5221f";
 
-    signatureMessage.textContent =
-        "PDFを作成しました。";
-
-    signatureMessage.style.color =
-        "#169447";
-
-}
-catch (error) {
-
-    console.error(
-        "PDF生成エラー:",
-        error
-    );
-
-
-    signatureMessage.textContent =
-        "PDFの作成に失敗しました。";
-
-    signatureMessage.style.color =
-        "#c5221f";
-
-}
-finally {
-
-    submitButton.disabled =
-        false;
-
-    clearButton.disabled =
-        false;
-
-}
         }
-    );
+        finally {
 
+            submitButton.disabled =
+                false;
+
+            clearButton.disabled =
+                false;
+
+        }
+
+    }
+);
 
     // =========================================================
     // iPad画面回転対応
