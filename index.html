@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代車借受に関する誓約書</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 24px 12px 60px;
+    background: #e9edf0;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        "Meiryo",
+        sans-serif;
+    color: #222;
+}
+
+.a4 {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 13mm 15mm;
+    background: #fff;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.15);
+}
+
+.title {
+    margin: 0 0 8mm;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.section {
+    margin-bottom: 5mm;
+}
+
+.check-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2mm;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+}
+
+.check-title input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #333;
+    border-radius: 3px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.check-title input[type="checkbox"]:checked + .checkbox {
+    background: #169447;
+    border-color: #169447;
+}
+
+.check-title input[type="checkbox"]:checked + .checkbox::after {
+    content: "✓";
+    color: white;
+    font-size: 19px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.notes {
+    margin: 0;
+    padding-left: 30px;
+    font-size: 12.5px;
+    line-height: 1.65;
+}
+
+.notes li {
+    margin-bottom: 1mm;
+}
+
+.section.checked {
+    background: #f3fbf6;
+    border-radius: 6px;
+    padding: 3mm;
+    margin-left: -3mm;
+    margin-right: -3mm;
+}
+
+.form-area {
+    margin-top: 8mm;
+    border-top: 1px solid #777;
+    padding-top: 5mm;
+}
+
+.form-row {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 5mm;
+    font-size: 13px;
+}
+
+.form-label {
+    width: 38mm;
+    font-weight: 700;
+}
+
+.form-line {
+    flex: 1;
+    min-height: 7mm;
+    border-bottom: 1px solid #555;
+}
+
+.date-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.date-line {
+    display: inline-block;
+    width: 18mm;
+    min-height: 7mm;
+    border-bottom: 1px solid #555;
+}
+
+.status-area {
+    margin-top: 8mm;
+    padding-top: 5mm;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+.status {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+}
+
+.status.complete {
+    color: #169447;
+}
+
+.next-button {
+    display: block;
+    width: 100%;
+    margin-top: 4mm;
+    padding: 15px;
+    border: 0;
+    border-radius: 8px;
+    background: #bdbdbd;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: not-allowed;
+}
+
+.next-button.enabled {
+    background: #169447;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 850px) {
+
+    body {
+        padding: 0;
+        background: #fff;
+    }
+
+    .a4 {
+        width: 100%;
+        min-height: 100vh;
+        padding: 22px 20px 40px;
+        box-shadow: none;
+    }
+
+    .title {
+        font-size: 21px;
+    }
+
+    .notes {
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .check-title {
+        font-size: 16px;
+    }
+
+    .checkbox {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media print {
+
+    body {
+        padding: 0;
+        background: #fff;
+    }
+
+    .a4 {
+        width: 210mm;
+        min-height: 297mm;
+        box-shadow: none;
+    }
+
+    .status-area {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="a4">
+
+    <h1 class="title">代車借受に関する誓約書</h1>
+
+
+    <!-- 1 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>利用・管理責任に関して</span>
+        </label>
+
+        <ul class="notes">
+            <li>運転は有効な運転免許証を所持している借受人、または事前に申告された運転者のみとなります。</li>
+            <li>借受時に車両状態を確認し、意義がないことを確認した上で使用します。</li>
+            <li>第三者への貸出・転貸や営業・配送等、通常の代車利用を超える用途での使用は禁止します。</li>
+            <li>利用期間中の車両管理責任はお客さまとなります（盗難・不注意含む）。</li>
+            <li>車内は「禁煙」です。灰皿の持ち込みや窓開けによる喫煙もご遠慮下さい。</li>
+            <li>交通法規を遵守し、安全運転を行って下さい。</li>
+        </ul>
+
+    </div>
+
+
+    <!-- 2 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>保険確認に関して</span>
+        </label>
+
+        <ul class="notes">
+            <li>
+                借受人は、自身が加入する任意保険に「他車運転特約」が付帯されているか、
+                かつ本代車利用に適用可能であることを事前に確認します。
+            </li>
+        </ul>
+
+    </div>
+
+
+    <!-- 3 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>事故・故障時の対応に関して</span>
+        </label>
+
+        <ul class="notes">
+            <li>
+                事故・故障時は必ず「安全確保・負傷者対応」「警察への連絡」「当社への連絡」をして下さい。
+            </li>
+            <li>
+                借受人の故意または過失により生じた損害については、借受人がこれを負担します
+                （ただし、当社の故意・重過失または車両の隠れた瑕疵によるものは除く）。
+            </li>
+        </ul>
+
+    </div>
+
+
+    <!-- 4 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>駐車違反・交通違反等に関して</span>
+        </label>
+
+        <ul class="notes">
+            <li>駐車違反・交通違反等については借受人が責任をもって処理します。</li>
+            <li>
+                未処理により当社に放置違反金、延滞金、照会対応費用等が発生した場合、
+                借受人が負担します。
+            </li>
+        </ul>
+
+    </div>
+
+
+    <!-- 5 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>返却に関して</span>
+        </label>
+
+        <ul class="notes">
+            <li>長距離を運転される場合、運転される分だけ給油をお願い致します。</li>
+            <li>
+                作業完了後は速やかに返却し、返却が遅延した場合、
+                当社は追加料金等を請求できるものとします。
+            </li>
+            <li>通常使用の範囲で返却します。</li>
+        </ul>
+
+    </div>
+
+
+    <!-- 6 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>破汚損・クリーニング費用に関して</span>
+        </label>
+
+        <ul class="notes">
+            <li>
+                車内外に著しい破汚損・臭気・喫煙痕跡等が認められた場合、
+                原状復帰費用（上限33,000円）を負担します。
+            </li>
+        </ul>
+
+    </div>
+
+
+    <!-- 7 -->
+    <div class="section">
+
+        <label class="check-title">
+            <input type="checkbox" class="confirm-check">
+            <span class="checkbox"></span>
+            <span>その他</span>
+        </label>
+
+        <ul class="notes">
+            <li>車内の忘れ物に関して、当社は責任を負いません。</li>
+            <li>本規約に定めのない事項は、法令・一般慣習および当社規定に従います。</li>
+        </ul>
+
+    </div>
+
+
+    <!-- 記入欄 -->
+    <div class="form-area">
+
+        <div class="form-row">
+            <div class="form-label">貸出車両</div>
+            <div class="form-line"></div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-label">ご記入日</div>
+
+            <div class="date-area">
+                <span class="date-line"></span>年
+                <span class="date-line"></span>月
+                <span class="date-line"></span>日
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-label">借受人の氏名（社名）</div>
+            <div class="form-line"></div>
+        </div>
+
+    </div>
+
+
+    <!-- 確認状態 -->
+    <div class="status-area">
+
+        <div id="status" class="status">
+            すべての項目をご確認のうえ、チェックしてください。
+        </div>
+
+        <button
+            id="nextButton"
+            class="next-button"
+            type="button"
+            disabled>
+            すべての項目を確認してください
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const checks = Array.from(
+        document.querySelectorAll(".confirm-check")
+    );
+
+    const status = document.getElementById("status");
+    const nextButton = document.getElementById("nextButton");
+
+
+    function updateStatus() {
+
+        checks.forEach(function (check) {
+
+            const section = check.closest(".section");
+
+            if (check.checked) {
+                section.classList.add("checked");
+            } else {
+                section.classList.remove("checked");
+            }
+
+        });
+
+
+        const checkedCount = checks.filter(function (check) {
+            return check.checked;
+        }).length;
+
+
+        if (checkedCount === checks.length) {
+
+            status.textContent =
+                "すべての項目を確認しました。";
+
+            status.classList.add("complete");
+
+            nextButton.disabled = false;
+            nextButton.classList.add("enabled");
+            nextButton.textContent = "署名へ進む";
+
+        } else {
+
+            status.textContent =
+                "確認済み " +
+                checkedCount +
+                " / " +
+                checks.length +
+                " 項目";
+
+            status.classList.remove("complete");
+
+            nextButton.disabled = true;
+            nextButton.classList.remove("enabled");
+            nextButton.textContent =
+                "すべての項目を確認してください";
+        }
+    }
+
+
+    checks.forEach(
