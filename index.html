@@ -498,6 +498,10 @@ body {
 }
     
 </style>
+
+https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.jsscript>
+https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.jsscript>
+
 </head>
 
 <body>
@@ -1641,14 +1645,139 @@ document.addEventListener("DOMContentLoaded", function () {
         clearCanvas
     );
 
+// =========================================================
+// A4 PDF生成・ダウンロード
+// =========================================================
+
+async function generateAndDownloadPdf() {
+
+    if (
+        typeof html2canvas === "undefined"
+    ) {
+
+        throw new Error(
+            "html2canvasを読み込めませんでした。"
+        );
+
+    }
+
+
+    if (
+        !window.jspdf ||
+        !window.jspdf.jsPDF
+    ) {
+
+        throw new Error(
+            "jsPDFを読み込めませんでした。"
+        );
+
+    }
+
+
+    // 署名画像の描画完了を待つ
+    if (
+        pdfSignatureImage.src &&
+        !pdfSignatureImage.complete
+    ) {
+
+        await new Promise(
+            function (resolve, reject) {
+
+                pdfSignatureImage.onload =
+                    resolve;
+
+                pdfSignatureImage.onerror =
+                    reject;
+
+            }
+        );
+
+    }
+
+
+    // 画面外のPDF専用A4を画像化
+    const pdfCanvas =
+        await html2canvas(
+            pdfDocument,
+            {
+                scale: 2,
+                backgroundColor: "#ffffff",
+                useCORS: true,
+                logging: false,
+                scrollX: 0,
+                scrollY: 0
+            }
+        );
+
+
+    const pdfImage =
+        pdfCanvas.toDataURL(
+            "image/jpeg",
+            0.95
+        );
+
+
+    const jsPDF =
+        window.jspdf.jsPDF;
+
+
+    // A4縦・単位mm
+    const pdf =
+        new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4",
+            compress: true
+        });
+
+
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+
+    // A4全面に1枚の画像として配置
+    pdf.addImage(
+        pdfImage,
+        "JPEG",
+        0,
+        0,
+        pageWidth,
+        pageHeight,
+        undefined,
+        "FAST"
+    );
+
+
+    const safeRecordId =
+        recordId || "no-record";
+
+
+    const fileName =
+        "代車借受誓約書_" +
+        safeRecordId +
+        ".pdf";
+
+
+    // 今回は動作確認のためダウンロード
+    pdf.save(
+        fileName
+    );
+
+
+    return pdf;
+
+}
 
     // =========================================================
     // 確定するボタン
     // =========================================================
 
     submitButton.addEventListener(
-        "click",
-        function () {
+    "click",
+    async function () {
 
             if (!hasSignature) {
 
@@ -1686,29 +1815,81 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // 日付・署名をPNG化
-            const signaturePng =
-                createSignaturePng();
+            try {
+
+    submitButton.disabled =
+        true;
+
+    clearButton.disabled =
+        true;
 
 
-            // PDF専用A4を完成させる
-            buildPdfDocument(
-                signaturePng
+    signatureMessage.textContent =
+        "PDFを作成しています...";
+
+    signatureMessage.style.color =
+        "#1677ff";
+
+
+    // PDF専用A4を完成させる
+    buildPdfDocument(
+        signaturePng
+    );
+
+
+    // img要素への反映を待つ
+    await new Promise(
+        function (resolve) {
+
+            requestAnimationFrame(
+                function () {
+
+                    requestAnimationFrame(
+                        resolve
+                    );
+
+                }
             );
 
-
-            signatureMessage.textContent =
-                "PDF用の誓約書を作成しました。";
-
-            signatureMessage.style.color =
-                "#169447";
+        }
+    );
 
 
-            console.log(
-                "PDF Document:",
-                pdfDocument
-            );
+    // PDF生成・ダウンロード
+    await generateAndDownloadPdf();
 
+
+    signatureMessage.textContent =
+        "PDFを作成しました。";
+
+    signatureMessage.style.color =
+        "#169447";
+
+}
+catch (error) {
+
+    console.error(
+        "PDF生成エラー:",
+        error
+    );
+
+
+    signatureMessage.textContent =
+        "PDFの作成に失敗しました。";
+
+    signatureMessage.style.color =
+        "#c5221f";
+
+}
+finally {
+
+    submitButton.disabled =
+        false;
+
+    clearButton.disabled =
+        false;
+
+}
         }
     );
 
