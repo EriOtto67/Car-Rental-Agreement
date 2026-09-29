@@ -128,6 +128,27 @@ body {
     border-bottom: 1px solid #555;
 }
 
+.rental-vehicle-area {
+    margin-bottom: 5mm;
+}
+
+.rental-vehicle-label {
+    margin-bottom: 1mm;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.rental-vehicle-box {
+    width: 100%;
+    min-height: 12mm;
+    padding: 2mm 3mm;
+    border: 2px solid #222;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
 .date-area {
     display: flex;
     align-items: flex-end;
@@ -376,9 +397,9 @@ body {
     <!-- 記入欄 -->
     <div class="form-area">
 
-        <div class="form-row">
-    <div class="form-label">貸出車両</div>
-    <div class="form-line" id="rentalVehicle"></div>
+        <div class="rental-vehicle-area">
+    <div class="rental-vehicle-label">貸出車両</div>
+    <div class="rental-vehicle-box" id="rentalVehicle"></div>
         </div>
 
         <div class="form-row">
