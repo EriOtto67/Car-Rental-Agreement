@@ -447,8 +447,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams(window.location.search);
     const rentalVehicle = params.get("vehicle") || "";
 
-    // 貸出車両欄へ表示
+    // 貸出車両の枠内に表示
     document.getElementById("rentalVehicle").textContent = rentalVehicle;
+
 
     const checks = Array.from(
         document.querySelectorAll(".confirm-check")
