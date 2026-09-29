@@ -422,6 +422,46 @@ body {
 
     </div>
 
+<!-- 電子署名エリア -->
+<div id="signatureSection" style="display:none;">
+
+    <h2>電子署名</h2>
+
+    <div>
+        下の枠内にご署名ください
+    </div>
+
+    <div class="signature-card">
+
+        <div class="signature-area">
+
+            <canvas id="signatureCanvas"></canvas>
+
+        </div>
+
+        <div class="signature-buttons">
+
+            <button
+                id="clearButton"
+                type="button">
+                書き直す
+            </button>
+
+            <button
+                id="submitButton"
+                type="button"
+                disabled>
+                確定する
+            </button>
+
+        </div>
+
+        <div id="signatureMessage"></div>
+
+    </div>
+
+</div>
+    
 </div>
 
 <script>
