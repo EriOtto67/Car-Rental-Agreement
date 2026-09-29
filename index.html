@@ -338,6 +338,165 @@ body {
         display: none;
     }
 }
+
+/* ================================
+   PDF保存専用A4
+================================ */
+
+#pdfDocument {
+    position: fixed;
+    left: -10000px;
+    top: 0;
+
+    width: 210mm;
+    height: 297mm;
+
+    padding: 13mm 15mm;
+
+    background: #ffffff;
+    color: #222;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        "Meiryo",
+        sans-serif;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+
+/* PDFタイトル */
+
+.pdf-title {
+    margin: 0 0 8mm;
+
+    text-align: center;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* PDF確認項目 */
+
+.pdf-section {
+    margin-bottom: 4mm;
+}
+
+
+/* PDF確認項目タイトル */
+
+.pdf-section-title {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 2mm;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* PDF用レ点 */
+
+.pdf-check {
+    width: 20px;
+    height: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: 1.5px solid #222;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #000;
+}
+
+
+/* PDF注意事項 */
+
+.pdf-notes {
+    margin: 0;
+
+    padding-left: 28px;
+
+    font-size: 11.5px;
+    line-height: 1.55;
+}
+
+
+.pdf-notes li {
+    margin-bottom: 0.7mm;
+}
+
+
+/* PDF貸出車両 */
+
+.pdf-rental-area {
+    margin-top: 6mm;
+}
+
+
+.pdf-rental-label {
+    margin-bottom: 1mm;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.pdf-rental-box {
+    width: 100%;
+    min-height: 12mm;
+
+    padding: 2mm 3mm;
+
+    border: 2px solid #222;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* PDF署名欄 */
+
+.pdf-signature-area {
+    margin-top: 6mm;
+}
+
+
+.pdf-signature-image {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-height: 55mm;
+
+    object-fit: contain;
+
+    background: #ffffff;
+}
+    
 </style>
 </head>
 
@@ -553,6 +712,42 @@ body {
     
 </div>
 
+<!-- ================================
+     PDF保存専用A4
+================================ -->
+
+<div id="pdfDocument">
+
+    <h1 class="pdf-title">
+        代車借受に関する誓約書
+    </h1>
+
+    <div id="pdfSections"></div>
+
+    <div class="pdf-rental-area">
+
+        <div class="pdf-rental-label">
+            貸出車両
+        </div>
+
+        <div
+            id="pdfRentalVehicle"
+            class="pdf-rental-box">
+        </div>
+
+    </div>
+
+    <div class="pdf-signature-area">
+
+        <img
+            id="pdfSignatureImage"
+            class="pdf-signature-image"
+            alt="記入日・署名">
+
+    </div>
+
+</div>
+    
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
